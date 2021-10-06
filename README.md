@@ -1,0 +1,87 @@
+# Installations
+```
+npm i discord-youtube-notifications
+```
+
+# What?
+An module to easily recive Youtube uploads notification.
+
+# Why?
+- Easy to use.
+- Active Support on [discord server](https://discord.gg/XYnMTQNTFh).
+- No API key needed.
+
+# Note
+- At least Node JS `14` is `required`.
+- The feeds thing of youtube takes some time to update, so the notifications might be bit slow.
+
+# How ?
+- ## Basic NOtifications
+```js
+const youtube = require('discord-youtube-notifications');
+
+const Notifier = new youtube.notifier(client);
+
+const youtube_channel_id = "UCSqcbw8r8TZKYUhx4mufvNg";
+const discord_channel_id = "732883841395720213";
+
+Notifier.addNotifier(youtube_channel_id, discord_channel_id);
+```
+
+- ## Custom Message
+```js
+const youtube = require('discord-youtube-notifications');
+
+const Notifier = new youtube.notifier(client, {
+    // If you do not add message parameter in addNotifier than this message is used
+    message: "Hello @everyone, **{author}** just publish a cool video called **{title}**\nGo show your support\n\nurl : {url}"
+});
+
+const youtube_channel_id = "UCSqcbw8r8TZKYUhx4mufvNg";
+const discord_channel_id = "732883841395720213";
+
+Notifier.addNotifier(youtube_channel_id, discord_channel_id);
+
+// A different message
+Notifier.addNotifier("Another Channel ID", discord_channel_id, "Hello guys, A nerd called **{author}** just publish a shit video called **{title}**\nGo dislike it\n\nurl : {url}");
+```
+
+- ## Advanced options
+```js
+const youtube = require('discord-youtube-notifications');
+
+const Notifier = new youtube.notifier(client, {
+    // Default message
+    message: "Hello @everyone, **{author}** just publish a cool video called **{title}**\nGo show your support\n\nurl : {url}",
+
+    // Time interval to check for new uploads
+    updateTime:60000, // in milliseconds,
+
+    // Give the mongo URI if you wanna save data in mongoose otherwise quick.db is used
+    mongoURI:"mongo+srv://something",
+
+    // Auto send the embed to the provided channel
+    autoSend:true, // if false you will get A "upload" event
+});
+```
+
+- ## Listening to events
+```js
+Notifier.on("upload", (client, data) => {
+  // Do something with your data
+});
+
+// Example Data 
+const data = {
+    youtube: "UCSqcbw8r8TZKYUhx4mufvNg", // The Youtube channel ID
+    channel: channelID, // The discord channel ID
+    lastVideo: last.link || "", // Latest video link
+    message: "new upload", // Custom message
+    author: "Krazy Developer", // The name of youtube channel
+    title: "How to code", // title of the video
+    title: "https://www.youtube.com/watch?v=CmK5JLt0GQ4", // Link of the video
+}
+```
+
+# Support
+for support or issues or queries contace me on my [discord server](https://discord.gg/XYnMTQNTFh).
