@@ -4,14 +4,24 @@ const channel = require('./models/channel');
 const lastVideo = require('./utility/lastVideo');
 const checker = require('./utility/checker');
 const EventEmitter = require('events');
+const { Client } = require('discord.js');
 
 class notifier extends EventEmitter {
     /** The variable which stores the update time interval
      * @var {Number} _updateTime
      */
     _updateTime = 60000;
+
+    /** This variable stores all the youtube channels
+     * @var {Array} _channels array of youtube channels
+     */
     _channels = [];
 
+    /**
+     * Create a youtube notifier
+     * @param {Client} client 
+     * @param {Options} param1 
+     */
     constructor(client, { autoSend = true, mongoURI = "quick.db", message = "**{author}** uploaded a new video, Go check it out\n\nLink : {url}", updateTime = 60000 } = {}) {
         super();
 
@@ -53,7 +63,15 @@ class notifier extends EventEmitter {
         })
     }
 
-    async addNotifier(youtubeId, channelID, message) {
+    /**
+     * 
+     * @param {String} youtubeId The youtube channel ID
+     * @param {String} channelID The discord channel ID where you want to send notification ( Options )
+     * @param {String} message The custom message for the notification
+     * @returns 
+     */
+    async addNotifier(youtubeId, channelID , message) {
+        if (typeof (youtubeId) !== "string") throw new Error("Youtube Channel ID should be a string");
         if (this._channels.some(v => v.youtube === youtubeId)) throw new Error("This channel already exist");
 
         const last = await lastVideo({ youtube: youtubeId });
@@ -72,7 +90,14 @@ class notifier extends EventEmitter {
         return this;
     }
 
+    /**
+     * Remove a channel, If you do not want notifications
+     * @param {String} youtubeId The youtube channel ID
+     * @returns 
+     */
     async removeNotifier(youtubeId) {
+        if (typeof (youtubeId) !== "string") throw new Error("Youtube Channel ID should be a string");
+
         this._channels = this._channels.filter(v => v.youtube !== youtubeId);
 
         this._mongoURI === "quick.db" ? quick.set("channels", this._channels) : await channel.findOneAndDelete({ youtube: youtubeId });
