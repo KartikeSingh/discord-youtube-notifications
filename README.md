@@ -20,11 +20,13 @@ An module to easily recive Youtube uploads notification.
 ```js
 const youtube = require('discord-youtube-notifications');
 
+// The client is the Discord Client
 const Notifier = new youtube.notifier(client);
 
 const youtube_channel_id = "UCSqcbw8r8TZKYUhx4mufvNg";
 const discord_channel_id = "732883841395720213";
 
+// The channel ID is options
 Notifier.addNotifier(youtube_channel_id, discord_channel_id);
 ```
 
@@ -55,13 +57,16 @@ const Notifier = new youtube.notifier(client, {
     message: "Hello @everyone, **{author}** just publish a cool video called **{title}**\nGo show your support\n\nurl : {url}",
 
     // Time interval to check for new uploads
-    updateTime:60000, // in milliseconds,
+    updateTime: 60000, // in milliseconds,
 
     // Give the mongo URI if you wanna save data in mongoose otherwise quick.db is used
-    mongoURI:"mongo+srv://something",
+    mongoURI: "mongo+srv://something",
 
     // Auto send the embed to the provided channel
-    autoSend:true, // if false you will get A "upload" event
+    autoSend: true, // if false you will get A "upload" event
+
+    // The youtube data v3 API key, Send this if you want updates to be fast and precise because without the key it take 10-15 minutes more time to get latest videos
+    apiKey: "the key",
 });
 ```
 
@@ -81,6 +86,15 @@ const data = {
     title: "How to code", // title of the video
     title: "https://www.youtube.com/watch?v=CmK5JLt0GQ4", // Link of the video
 }
+```
+
+- ## Utility functions
+```js
+// To edit the notifier's channel ID, or the message, If you don't wanna change one of the property just give undefined in its place
+Notifier.editNotifier(youtubeId, channelID, message);
+
+// To remove a notifier
+Notifier.removeNotifier(youtubeId)
 ```
 
 # Support
