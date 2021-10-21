@@ -31,10 +31,9 @@ class notifier extends EventEmitter {
         super();
 
         const { apiKey, autoSend = true, mongoURI = "quick.db", message = "**{author}** uploaded a new video, Go check it out\n\nLink : {url}", updateTime = 60000 } = options;
-
+        
         if (!client) throw new Error("No client was provided")
-        if (typeof (apiKey) !== "string") throw new TypeError("Update time should be a number and at least 60000");
-        if (typeof (updateTime) !== "number" || updateTime < 10000) throw new TypeError("Update time should be a number and at least 10000");
+        if (typeof (updateTime) !== "number" || updateTime < 60000) throw new TypeError("Update time should be a number and at least 10000");
         if (typeof (message) !== "string") throw new TypeError("The default message should be a string");
         if (typeof (autoSend) !== "boolean") throw new TypeError("The autoSend property should be a boolean");
 
