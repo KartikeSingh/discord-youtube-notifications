@@ -90,7 +90,7 @@ class notifier extends EventEmitter {
 
         while (!this._connected) await new Promise(res => setTimeout(res, 500));
 
-        if (this._channels.some(v => v.youtube === youtubeId)) throw new Error("This channel already exist");
+        if (this._channels.some(v => v.youtube === youtubeId)) return this.editNotifier(youtubeId, channelID, message)
 
         const last = await lastVideo.bind(this)({ youtube: youtubeId });
 
