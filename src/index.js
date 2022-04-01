@@ -17,6 +17,11 @@ class notifier extends EventEmitter {
      */
     _channels = [];
 
+    /** The variable for checking state of the database
+     * @var {Boolean} connect Whether database is connected & loaded
+     */
+    _connected = false;
+
     /**
      * Create a youtube notifier
      * @param {Client} client Your discord client instance
@@ -31,7 +36,7 @@ class notifier extends EventEmitter {
         super();
 
         const { apiKey, autoSend = true, mongoURI = "quick.db", message = "**{author}** uploaded a new video, Go check it out\n\nLink : {url}", updateTime = 60000 } = options;
-        
+
         if (!client) throw new Error("No client was provided")
         if (typeof (updateTime) !== "number" || updateTime < 60000) throw new TypeError("Update time should be a number and at least 10000");
         if (typeof (message) !== "string") throw new TypeError("The default message should be a string");
@@ -47,11 +52,13 @@ class notifier extends EventEmitter {
         if (mongoURI.toLowerCase() === "quick.db") {
             this._quickSetup();
 
+            this._connected = true;
             setInterval(() => this._load(), this._updateTime);
         } else {
-            this._mongoSetup();
-
-            setInterval(() => this._load(), this._updateTime);
+            this._mongoSetup().then(() => {
+                this._connected = true;
+                setInterval(() => this._load(), this._updateTime);
+            })
         }
     }
 
@@ -80,6 +87,9 @@ class notifier extends EventEmitter {
      */
     async addNotifier(youtubeId, channelID, message) {
         if (typeof (youtubeId) !== "string") throw new Error("Youtube Channel ID should be a string");
+
+        while (!this._connected) await new Promise(res => setTimeout(res, 500));
+
         if (this._channels.some(v => v.youtube === youtubeId)) throw new Error("This channel already exist");
 
         const last = await lastVideo.bind(this)({ youtube: youtubeId });
@@ -106,6 +116,10 @@ class notifier extends EventEmitter {
     async removeNotifier(youtubeId) {
         if (typeof (youtubeId) !== "string") throw new Error("Youtube Channel ID should be a string");
 
+        while (!this._connected) await new Promise(res => setTimeout(res, 500));
+
+        if (!this._channels.filter(v => v.youtube === youtubeId).length === 0) throw new Error("No notifier found with the ID: " + youtubeId);
+
         this._channels = this._channels.filter(v => v.youtube !== youtubeId);
 
         this._mongoURI === "quick.db" ? quick.set("channels", this._channels) : await channel.findOneAndDelete({ youtube: youtubeId });
@@ -122,6 +136,9 @@ class notifier extends EventEmitter {
      */
     async editNotifier(youtubeId, channelID, message) {
         if (typeof (youtubeId) !== "string") throw new Error("Youtube Channel ID should be a string");
+
+        while (!this._connected) await new Promise(res => setTimeout(res, 500));
+
         if (!this._channels.some(v => v.youtube === youtubeId)) throw new Error("This channel do not exist");
 
         const data = this._channels.filter(v => v.youtube === youtubeId)[0];
