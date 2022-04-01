@@ -17,6 +17,7 @@ module.exports = function (channel) {
 
             channel.author = v.author;
             channel.title = v.title;
+            channel.link = v.link;
 
             if (!this._autoSend) return this.emit("upload", this.client, channel);
 

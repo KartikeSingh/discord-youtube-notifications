@@ -84,7 +84,7 @@ const data = {
     message: "new upload", // Custom message
     author: "Krazy Developer", // The name of youtube channel
     title: "How to code", // title of the video
-    title: "https://www.youtube.com/watch?v=CmK5JLt0GQ4", // Link of the video
+    link: "https://www.youtube.com/watch?v=CmK5JLt0GQ4", // Link of the video
 }
 ```
 
