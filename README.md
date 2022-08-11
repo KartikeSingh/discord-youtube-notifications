@@ -1,6 +1,6 @@
 # Installations
 ```
-npm i discord-youtube-notifications
+npm i discord-bot-youtube-notifications
 ```
 
 # What?
