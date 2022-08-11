@@ -1,6 +1,6 @@
 # Installations
 ```
-npm i discord-youtube-notifications
+npm i discord-bot-youtube-notifications
 ```
 
 # What?
@@ -18,7 +18,7 @@ An module to easily recive Youtube uploads notification.
 # How ?
 - ## Basic NOtifications
 ```js
-const youtube = require('discord-youtube-notifications');
+const youtube = require('discord-bot-youtube-notifications');
 
 // The client is the Discord Client
 const Notifier = new youtube.notifier(client);
@@ -32,7 +32,7 @@ Notifier.addNotifier(youtube_channel_id, discord_channel_id);
 
 - ## Custom Message
 ```js
-const youtube = require('discord-youtube-notifications');
+const youtube = require('discord-bot-youtube-notifications');
 
 const Notifier = new youtube.notifier(client, {
     // If you do not add message parameter in addNotifier than this message is used
@@ -50,7 +50,7 @@ Notifier.addNotifier("Another Channel ID", discord_channel_id, "Hello guys, A ne
 
 - ## Advanced options
 ```js
-const youtube = require('discord-youtube-notifications');
+const youtube = require('discord-bot-youtube-notifications');
 
 const Notifier = new youtube.notifier(client, {
     // Default message
