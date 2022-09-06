@@ -18,15 +18,17 @@ module.exports = function (channel) {
             channel.author = v.author;
             channel.title = v.title;
             channel.link = v.link;
+            channel.thumbnail = v.thumbnail;
 
             if (!this._autoSend) return this.emit("upload", this.client, channel);
 
             try {
                 (await this.client.channels.fetch(channel.channel))?.send({
                     embeds: [{
-                        description: channel.message.replace(/{author}/g, v.author)
-                            .replace(/{title}/g, v.title)
-                            .replace(/{url}/g, v.link)
+                        description: channel.message.replace(/{author}/ig, v.author)
+                            .replace(/{thumbnail}/ig, v.thumbnail)
+                            .replace(/{title}/ig, v.title)
+                            .replace(/{url}/ig, v.link)
                     }]
                 })
             } catch (e) {

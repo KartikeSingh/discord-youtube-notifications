@@ -36,7 +36,7 @@ const youtube = require('discord-youtube-notifications');
 
 const Notifier = new youtube.notifier(client, {
     // If you do not add message parameter in addNotifier than this message is used
-    message: "Hello @everyone, **{author}** just publish a cool video called **{title}**\nGo show your support\n\nurl : {url}"
+    message: "Hello @everyone, **{author}** just publish a cool video called **{title}**\nGo show your support\n\nurl : {url}\n\nThumbnail: {thumbnail}"
 });
 
 const youtube_channel_id = "UCSqcbw8r8TZKYUhx4mufvNg";
@@ -45,7 +45,7 @@ const discord_channel_id = "732883841395720213";
 Notifier.addNotifier(youtube_channel_id, discord_channel_id);
 
 // A different message
-Notifier.addNotifier("Another Channel ID", discord_channel_id, "Hello guys, A nerd called **{author}** just publish a shit video called **{title}**\nGo dislike it\n\nurl : {url}");
+Notifier.addNotifier("Another Channel ID", discord_channel_id, "Hello guys, A nerd called **{author}** just publish a shit video called **{title}**\nGo dislike it\n\nurl : {url}\nThumbnail: {thumbnail}");
 ```
 
 - ## Advanced options
@@ -85,6 +85,7 @@ const data = {
     author: "Krazy Developer", // The name of youtube channel
     title: "How to code", // title of the video
     link: "https://www.youtube.com/watch?v=CmK5JLt0GQ4", // Link of the video
+    thumbnail: "https://i.ytimg.com/vi/E7sZqOnZUrA/hqdefault.jpg", // image url of the thumbnail
 }
 ```
 

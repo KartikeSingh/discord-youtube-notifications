@@ -10,6 +10,7 @@ module.exports =function (youtubeChannel) {
             let data = {
                     title: v.data.items[0].snippet.title,
                     author: v.data.items[0].snippet.channelTitle,
+                    thumbnail: (v.data.items[0].snippet.thumbnails.high || v.data.items[0].snippet.thumbnails.default).url,
                     link: `https://www.youtube.com/watch?v=${v.data.items[0].id.videoId}`,
                 }
 
