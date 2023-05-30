@@ -32,7 +32,7 @@ module.exports = function (channel) {
                     }]
                 })
             } catch (e) {
-                console.warn(`[ Youtube Notifier ] : I was unable to send message channel : ${channel.channel} for youtube channel ${channel.youtube}`);
+                if (!this.noLog) console.warn(`[ Youtube Notifier ] : I was unable to send message channel : ${channel.channel} for youtube channel ${channel.youtube}`);
             }
         }
     })

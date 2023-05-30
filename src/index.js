@@ -31,14 +31,15 @@ class notifier extends EventEmitter {
      * @param {String} options.mongoURI Your mongo db URI to connect database with it.
      * @param {Number} options.updateTime Time interval to check for new updates.
      * @param {String} options.message The default message for youtube notifications.
+     * @param {String} options.nolog Do you want to disable package's console log
      */
     constructor(client, options = {}) {
         super();
 
-        const { apiKey, autoSend = true, mongoURI = "quick.db", message = "**{author}** uploaded a new video, Go check it out\n\nLink : {url}", updateTime = 60000 } = options;
+        const { apiKey, autoSend = true, mongoURI = "quick.db", message = "**{author}** uploaded a new video, Go check it out\n\nLink : {url}", updateTime = 10000, nolog = false } = options;
 
         if (!client) throw new Error("No client was provided")
-        if (typeof (updateTime) !== "number" || updateTime < 60000) throw new TypeError("Update time should be a number and at least 10000");
+        if (typeof (updateTime) !== "number" || updateTime < 2000) throw new TypeError("Update time should be a number and at least 2000");
         if (typeof (message) !== "string") throw new TypeError("The default message should be a string");
         if (typeof (autoSend) !== "boolean") throw new TypeError("The autoSend property should be a boolean");
 
@@ -48,6 +49,7 @@ class notifier extends EventEmitter {
         this._message = message;
         this._updateTime = updateTime
         this._autoSend = autoSend;
+        this.noLog = typeof nolog === "boolean" ? nolog : false;
 
         if (mongoURI.toLowerCase() === "quick.db") {
             this._quickSetup();
