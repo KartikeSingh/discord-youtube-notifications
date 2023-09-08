@@ -12,6 +12,9 @@ const channelSchema = new Schema({
     lastVideo: {
         type: String,
     },
+    lastPublish: {
+        type: Number,
+    },
     message: {
         type: String,
     },
