@@ -13,7 +13,7 @@ module.exports = function (youtubeChannel) {
 
                 axios.get(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=50&key=${this.apiKey}`).then(e => {
                         
-                        if(!e.data.items[0]) res(false);
+                        if(!e.data.items[0]) res({});
     
                         let data = {
                             title: e.data.items[0].snippet.title,
