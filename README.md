@@ -10,6 +10,7 @@ An module to easily recive Youtube uploads notification.
 - Easy to use.
 - Active Support on [discord server](https://discord.gg/XYnMTQNTFh).
 - No API key needed.
+- psst~ low quota api route supported!
 
 # Note
 - At least Node JS `14` is `required`.
