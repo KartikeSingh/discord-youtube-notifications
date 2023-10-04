@@ -1,10 +1,10 @@
-const quick = require('quick.db');
+const { Client } = require('discord.js');
+
+const EventEmitter = require('events');
 const mongoose = require('mongoose');
 const channel = require('./models/channel');
 const lastVideo = require('./utility/lastVideo');
 const checker = require('./utility/checker');
-const EventEmitter = require('events');
-const { Client } = require('discord.js');
 
 class notifier extends EventEmitter {
     /** The variable which stores the update time interval
@@ -52,10 +52,10 @@ class notifier extends EventEmitter {
         this.noLog = typeof nolog === "boolean" ? nolog : false;
 
         if (mongoURI.toLowerCase() === "quick.db") {
-            this._quickSetup();
-
-            this._connected = true;
-            setInterval(() => this._load(), this._updateTime);
+            this._quickSetup().then(() => {
+                this._connected = true;
+                setInterval(() => this._load(), this._updateTime);
+            })
         } else {
             this._mongoSetup().then(() => {
                 this._connected = true;
@@ -69,9 +69,14 @@ class notifier extends EventEmitter {
         this._channels = await channel.find() || [];
     }
 
-    _quickSetup() {
-        if (!quick.has("channels")) quick.set("channels", [])
-        this._channels = quick.get("channels") || [];
+    async _quickSetup() {
+        const { QuickDB } = require('quick.db');
+        const quick = new QuickDB()
+
+        this.quick = quick;
+
+        if (!(await this.quick.has("channels"))) await this.quick.set("channels", [])
+        this._channels = await this.quick.get("channels") || [];
     }
 
     _load() {
@@ -105,7 +110,7 @@ class notifier extends EventEmitter {
             message: message || this._message
         })
 
-        this._mongoURI === "quick.db" ? quick.set("channels", this._channels) : await channel.create(this._channels[this._channels.length - 1]);
+        this._mongoURI === "quick.db" ?await this.quick.set("channels", this._channels) : await channel.create(this._channels[this._channels.length - 1]);
 
         return this;
     }
@@ -124,7 +129,7 @@ class notifier extends EventEmitter {
 
         this._channels = this._channels.filter(v => v.youtube !== youtubeId);
 
-        this._mongoURI === "quick.db" ? quick.set("channels", this._channels) : await channel.findOneAndDelete({ youtube: youtubeId });
+        this._mongoURI === "quick.db" ? this.quick.set("channels", this._channels) : await channel.findOneAndDelete({ youtube: youtubeId });
 
         return this;
     }
@@ -151,7 +156,7 @@ class notifier extends EventEmitter {
 
         this._channels.push(data);
 
-        this._mongoURI === "quick.db" ? quick.set("channels", this._channels) : await channel.findOneAndUpdate({ youtube: youtubeId }, data);
+        this._mongoURI === "quick.db" ?this. quick.set("channels", this._channels) : await channel.findOneAndUpdate({ youtube: youtubeId }, data);
 
         return this;
     }
