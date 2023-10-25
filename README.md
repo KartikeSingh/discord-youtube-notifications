@@ -17,7 +17,8 @@ An module to easily recive Youtube uploads notification.
 - The feeds thing of youtube takes some time to update, so the notifications might be bit slow.
 
 # How ?
-- ## Basic NOtifications
+**Warning:** Either install `quick.db` or input `mongoUrl` property so the package will work
+- ## Basic Notifications
 ```js
 const youtube = require('discord-bot-youtube-notifications');
 

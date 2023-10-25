@@ -1,6 +1,6 @@
 {
   "name": "discord-bot-youtube-notifications",
-  "version": "1.2.1-a",
+  "version": "1.2.1",
   "description": "An module to get youtube notifications.",
   "main": "src/index.js",
   "scripts": {
