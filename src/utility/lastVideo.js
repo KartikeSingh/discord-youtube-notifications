@@ -1,17 +1,17 @@
-const { default: axios } = require('axios');
+const fetch = (...args) => import('node-fetch').then(({default: fetch}) => fetch(...args));
 
 const parser = new (require('rss-parser'))();
 
 module.exports = function (youtubeChannel) {
     return new Promise(res => {
         if (this.apiKey) {
-            axios.get(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${youtubeChannel.youtube}&key=${this.apiKey}`).then(v => {
+            fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${youtubeChannel.youtube}&key=${this.apiKey}`).then(v => {
 
                 if(!v.data.items[0]) res(false);
 
                 let playlistId = v.data.items[0].contentDetails.relatedPlaylists.uploads;
 
-                axios.get(`https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${playlistId}&maxResults=50&key=${this.apiKey}`).then(e => {
+                fetch(`https://www.googleapis.com/youtube/v3/channels?part=contentDetails&id=${youtubeChannel.youtube}&key=${this.apiKey}`).then(e => {
                         
                         if(!e.data.items[0]) res({});
     
