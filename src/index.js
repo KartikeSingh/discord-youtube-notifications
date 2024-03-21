@@ -1,8 +1,6 @@
 const { Client } = require('discord.js');
 
 const EventEmitter = require('events');
-const mongoose = require('mongoose');
-const channel = require('./models/channel');
 const lastVideo = require('./utility/lastVideo');
 const checker = require('./utility/checker');
 
@@ -28,7 +26,6 @@ class notifier extends EventEmitter {
      * @param {Object} options The options for the notifier
      * @param {String} options.apiKey Your youtube api key
      * @param {Boolean} options.autoSend Whether you want the notifier to auto send the notifications, If false than upload event is triggered
-     * @param {String} options.mongoURI Your mongo db URI to connect database with it.
      * @param {Number} options.updateTime Time interval to check for new updates.
      * @param {String} options.message The default message for youtube notifications.
      * @param {String} options.nolog Do you want to disable package's console log
@@ -36,7 +33,7 @@ class notifier extends EventEmitter {
     constructor(client, options = {}) {
         super();
 
-        const { apiKey, autoSend = true, mongoURI = "quick.db", message = "**{author}** uploaded a new video, Go check it out\n\nLink : {url}", updateTime = 10000, nolog = false } = options;
+        const { apiKey, autoSend = true, message = "**{author}** uploaded a new video, Go check it out\n\nLink : {url}", updateTime = 10000, nolog = false } = options;
 
         if (!client) throw new Error("No client was provided")
         if (typeof (updateTime) !== "number" || updateTime < 2000) throw new TypeError("Update time should be a number and at least 2000");
@@ -45,38 +42,10 @@ class notifier extends EventEmitter {
 
         this.client = client;
         this.apiKey = apiKey;
-        this._mongoURI = mongoURI;
         this._message = message;
         this._updateTime = updateTime
         this._autoSend = autoSend;
         this.noLog = typeof nolog === "boolean" ? nolog : false;
-
-        if (mongoURI.toLowerCase() === "quick.db") {
-            this._quickSetup().then(() => {
-                this._connected = true;
-                setInterval(() => this._load(), this._updateTime);
-            })
-        } else {
-            this._mongoSetup().then(() => {
-                this._connected = true;
-                setInterval(() => this._load(), this._updateTime);
-            })
-        }
-    }
-
-    async _mongoSetup() {
-        await mongoose.connect(this._mongoURI).catch(e => { throw new Error("Invalid Mongo URI was provided, type quick.db or don't provide the uri at all, If you want to work without mongo") });
-        this._channels = await channel.find() || [];
-    }
-
-    async _quickSetup() {
-        const { QuickDB } = require('quick.db');
-        const quick = new QuickDB()
-
-        this.quick = quick;
-
-        if (!(await this.quick.has("channels"))) await this.quick.set("channels", [])
-        this._channels = await this.quick.get("channels") || [];
     }
 
     _load() {
@@ -110,8 +79,6 @@ class notifier extends EventEmitter {
             message: message || this._message
         })
 
-        this._mongoURI === "quick.db" ?await this.quick.set("channels", this._channels) : await channel.create(this._channels[this._channels.length - 1]);
-
         return this;
     }
 
@@ -128,8 +95,6 @@ class notifier extends EventEmitter {
         if (!this._channels.filter(v => v.youtube === youtubeId).length === 0) throw new Error("No notifier found with the ID: " + youtubeId);
 
         this._channels = this._channels.filter(v => v.youtube !== youtubeId);
-
-        this._mongoURI === "quick.db" ? this.quick.set("channels", this._channels) : await channel.findOneAndDelete({ youtube: youtubeId });
 
         return this;
     }
@@ -156,13 +121,10 @@ class notifier extends EventEmitter {
 
         this._channels.push(data);
 
-        this._mongoURI === "quick.db" ?this. quick.set("channels", this._channels) : await channel.findOneAndUpdate({ youtube: youtubeId }, data);
-
         return this;
     }
 }
 
 module.exports = {
     notifier,
-    channelModel: channel,
 }
